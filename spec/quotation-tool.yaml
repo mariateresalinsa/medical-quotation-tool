@@ -1,0 +1,67 @@
+# ============================================================
+# Quotation Tool — Orchestrator Configuration
+# ============================================================
+
+version: "1.0"
+name: "SGS Medical Device Quotation Tool"
+
+schemes:
+  - id: eu_ivdr
+    name: "EU IVDR"
+    description: "Regulation (EU) 2017/746"
+    modules: [module_I, module_II, module_III, module_IV, module_V]
+
+  - id: eu_mdr
+    name: "EU MDR"
+    description: "Regulation (EU) 2017/745"
+    modules: [module_I, module_II, module_III, module_IV, module_V]
+
+  - id: uk_mdr
+    name: "UK MDR"
+    description: "UK Medical Devices Regulations 2002 (as amended)"
+    modules: [module_I, module_II, module_III, module_IV, module_V]
+
+  - id: iso_13485
+    name: "ISO 13485"
+    description: "Quality Management System"
+    modules: [module_III, module_V]
+
+execution_order:
+  - module_III
+  - module_I
+  - module_II
+  - module_IV
+  - module_V
+
+modules:
+  module_I:
+    name: "TDA Engine"
+    source: "GPMD 1022"
+    rule_file: "module_I_tda.yaml"
+    condition: "scheme in [eu_ivdr, eu_mdr, uk_mdr]"
+
+  module_II:
+    name: "Sampling Engine"
+    source: "GPMD 1043 / LPMDR.IVDREG1013"
+    rule_file: "module_II_sampling.yaml"
+    condition: "scheme in [eu_ivdr, eu_mdr, uk_mdr]"
+
+  module_III:
+    name: "Audit Baseline"
+    source: "GPMD 1005"
+    rule_file: "module_III_audit.yaml"
+    condition: "always"
+
+  module_IV:
+    name: "Linking Engine"
+    rule_file: "module_IV_linking_I_II.yaml"
+    condition: "scheme in [eu_ivdr, eu_mdr, uk_mdr]"
+    depends_on: [module_I, module_II]
+
+  module_V:
+    name: "Quote Creation"
+    rule_file: "module_V_quotation.yaml"
+    condition: "always"
+    depends_on:
+      required: [module_III]
+      optional: [module_IV]
