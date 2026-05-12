@@ -15,7 +15,7 @@
 
     <main>
 
-        <!-- ALWAYS VISIBLE -->
+        <!-- ═══════════ TABLE 1: BASELINE ═══════════ -->
         <section class="form-section">
             <h2>1. Select Standards</h2>
             <p class="hint">B.001 — Select all applicable certification schemes</p>
@@ -24,6 +24,7 @@
                 <label><input type="checkbox" name="standards" value="eu_ivdr"> EU IVDR</label>
                 <label><input type="checkbox" name="standards" value="eu_mdr"> EU MDR</label>
                 <label><input type="checkbox" name="standards" value="uk_mdr"> UK MDR</label>
+                <label><input type="checkbox" name="standards" value="uk_ivdr"> UK MDR Part IV (IVDR)</label>
             </div>
         </section>
 
@@ -34,357 +35,422 @@
             <div class="field">
                 <label>B.002 — Company Location</label>
                 <select id="b002">
-                    <option value="">— Select —</option>
-                    <option value="normal">Normal Country</option>
-                    <option value="premium">Premium Country</option>
+                    <option value="">— Select country —</option>
                 </select>
+            </div>
+
+            <div class="field">
+                <label>B.003 — Has your organization been certified by SGS under another quality management system standard for at least one complete and effective certification cycle?</label>
+                <select id="b003"><option value="no">No</option><option value="yes">Yes</option></select>
             </div>
 
             <!-- CONDITION: ISO 13485 AND (IVDR or MDR or UKMDR) -->
-            <div id="field-b003" class="field hidden">
-                <label>B.003 — Are all devices under ISO 13485 also covered under MDR/IVDR/UK MDR?</label>
-                <select id="b003">
+            <div id="field-b008" class="field hidden">
+                <label>B.008 — Are all medical devices covered under your ISO 13485 certification scope also included within the scope of your EU MDR, EU IVDR, and/or UK MDR conformity assessments?</label>
+                <select id="b008">
                     <option value="">— Select —</option>
                     <option value="yes">Yes</option>
-                    <option value="no">No — extra devices under ISO 13485 only</option>
+                    <option value="no">No — there are extra devices under ISO 13485 only</option>
                 </select>
             </div>
-
-            <!-- CONDITION: B.003 = No -->
-            <div id="field-b003-count" class="field hidden">
+            <!-- CONDITION: B.008 = No -->
+            <div id="field-b008-count" class="field hidden">
                 <label>How many additional ISO 13485-only devices?</label>
                 <input type="number" min="1" placeholder="e.g. 5">
             </div>
 
-            <!-- CONDITION: ISO 13485 selected -->
-            <div id="field-b004" class="field hidden">
-                <label>B.004 — Do you install products at the customers' premises?</label>
-                <select id="b004">
-                    <option value="">— Select —</option>
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
-                </select>
+            <!-- CONDITION: ISO 13485 — Table 1.2 -->
+            <div id="field-b004-install" class="field hidden">
+                <label>Do you install products at the customers' premises?</label>
+                <select id="b004-install"><option value="no">No</option><option value="yes">Yes</option></select>
+            </div>
+
+            <!-- CONDITION: any regulation (MDR/IVDR/UKMDR) — Table 1.3 -->
+            <div id="field-b009" class="field hidden">
+                <label>Does any of your devices have eIFU/e-labelling?</label>
+                <select id="b009"><option value="no">No</option><option value="yes">Yes</option></select>
+            </div>
+            <div id="field-b011" class="field hidden">
+                <label>B.011 — Does any device in the portfolio incorporate Artificial Intelligence?</label>
+                <select id="b011"><option value="no">No</option><option value="yes">Yes</option></select>
+            </div>
+            <div id="field-b012" class="field hidden">
+                <label>B.012 — Does any device claim innovative characteristics compared with state-of-the-art?</label>
+                <select id="b012"><option value="no">No</option><option value="yes">Yes</option></select>
             </div>
         </section>
 
-        <!-- CONDITION: any standard selected -->
+        <!-- CONDITION: any standard selected — Facilities (per site) -->
         <section id="facilities-section" class="form-section hidden">
             <h2>3. Facilities</h2>
-            <p class="hint">One block per site</p>
-
-            <div class="card">
-                <h3>Site 1</h3>
-                <div class="field">
-                    <label>B.005 — Site ID</label>
-                    <input type="text" placeholder="e.g. Milan HQ">
-                </div>
-                <div class="field">
-                    <label>B.006 — Effective number of personnel (FTE)</label>
-                    <input type="number" min="1" placeholder="e.g. 50">
-                </div>
-                <div class="field">
-                    <label>B.007 — Number of clean rooms</label>
-                    <input type="number" min="0" placeholder="e.g. 2">
-                </div>
-                <div class="field">
-                    <label>B.008 — Activities</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option>Design & Manufacturing</option>
-                        <option>Manufacturing only</option>
-                        <option>Design only</option>
-                        <option>Distribution only</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>B.009 — Number of shifts</label>
-                    <input type="number" min="1" max="4" value="1">
-                </div>
-                <div class="field">
-                    <label>B.010 — Prior SGS certification to another QMS standard?</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option value="no">No</option>
-                        <option value="yes">Yes</option>
-                    </select>
-                </div>
-            </div>
+            <p class="hint">Add each site separately. Repeat B.004–B.007 per site.</p>
+            <div id="sites-container"></div>
+            <button id="site-add-btn" class="btn-secondary" onclick="addSite()">+ Add Site</button>
         </section>
 
-        <!-- CONDITION: EU IVDR ticked -->
-        <section id="eu-ivdr-section" class="form-section hidden">
-            <h2>4. EU IVDR — Device</h2>
-
-            <div class="card">
-                <h3>IVDR Device 1</h3>
-                <div class="field">
-                    <label>1.001 — Device Name</label>
-                    <input type="text" placeholder="e.g. Rapid Antigen Test">
-                </div>
-                <div class="field">
-                    <label>1.002 — Classification</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option>Class A</option>
-                        <option>Class B</option>
-                        <option>Class C</option>
-                        <option>Class D</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>1.003 — IVR Code</label>
-                    <select id="ivdr-ivr">
-                        <option value="">— Select —</option>
-                        <option value="other">Other</option>
-                        <option value="IVS1005">IVS 1005 (Sterile)</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>1.004 — IVS Codes</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox"> IVS 1001</label>
-                        <label><input type="checkbox"> IVS 1002</label>
-                        <label><input type="checkbox"> IVS 1006</label>
-                        <label><input type="checkbox"> IVS 1007</label>
-                        <label><input type="checkbox"> IVS 1008</label>
-                        <label><input type="checkbox"> IVS 1010</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <label>1.009 — Artificial Intelligence?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>1.010 — Clinical Studies?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>1.011 — Number of accessories</label>
-                    <input type="number" min="0" value="0">
-                </div>
-                <div class="field">
-                    <label>1.014 — Multiplexed: how many analytes?</label>
-                    <input type="number" min="0" value="0">
-                </div>
-                <div class="field">
-                    <label>1.015 — Number of device variants</label>
-                    <input type="number" min="0" value="0">
-                </div>
-
-                <!-- CONDITION: IVR code = IVS 1005 -->
-                <div class="sterility-block hidden" id="ivdr-sterility">
-                    <h4>Sterility — IVS 1005</h4>
-                    <div class="field">
-                        <label>S1.001 — Sterilisation Agent</label>
-                        <select>
-                            <option value="">— Select —</option>
-                            <option>EO (Ethylene Oxide)</option>
-                            <option>Gamma Irradiation</option>
-                            <option>Steam</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>S1.002 — Total Number of Devices</label>
-                        <input type="number" min="1">
-                    </div>
-                    <div class="field">
-                        <label>S1.003 — Number of Sterilization Validation Reports</label>
-                        <input type="number" min="0">
-                    </div>
-                    <div class="field">
-                        <label>S1.004 — Aseptic Process?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CONDITION: EU MDR ticked -->
+        <!-- ═══════════ TABLE 2: EU MDR ═══════════ -->
         <section id="eu-mdr-section" class="form-section hidden">
-            <h2>5. EU MDR — Device</h2>
-
-            <div class="card">
-                <h3>MDR Device 1</h3>
-                <div class="field">
-                    <label>2.001 — Device Name</label>
-                    <input type="text" placeholder="e.g. Hip implant">
-                </div>
-                <div class="field">
-                    <label>2.002 — Device Classification</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option>Class Ir</option>
-                        <option>Class Im</option>
-                        <option>Class IIa</option>
-                        <option>Class IIb</option>
-                        <option>Class III</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>2.003 — MDN/MDA Code</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option>MDA0315</option>
-                        <option>MDA0317</option>
-                        <option>MDN1208</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>2.004 — MDS Codes</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" id="mdr-mds1001"> MDS 1001</label>
-                        <label><input type="checkbox" id="mdr-mds1003"> MDS 1003</label>
-                        <label><input type="checkbox" id="mdr-mds1005"> MDS 1005 (Sterile)</label>
-                        <label><input type="checkbox"> MDS 1006</label>
-                        <label><input type="checkbox"> MDS 1007</label>
-                        <label><input type="checkbox"> MDS 1008</label>
-                        <label><input type="checkbox"> MDS 1009</label>
-                        <label><input type="checkbox"> MDS 1012</label>
-                        <label><input type="checkbox"> MDS 1014</label>
-                    </div>
-                </div>
-
-                <!-- CONDITION: MDS 1001 ticked -->
-                <div class="conditional-block hidden" id="mdr-block-1001">
-                    <div class="field">
-                        <label>2.013 — Number of medicinal substances</label>
-                        <input type="number" min="0" value="0">
-                    </div>
-                </div>
-
-                <!-- CONDITION: MDS 1003 ticked -->
-                <div class="conditional-block hidden" id="mdr-block-1003">
-                    <div class="field">
-                        <label>2.014 — Number of animal tissue/derivative</label>
-                        <input type="number" min="0" value="0">
-                    </div>
-                    <div class="field">
-                        <label>2.015 — Manufacturing process uses tallow, exempt from Rule 18?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label>2.007 — Artificial Intelligence?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.008 — E-labelling?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.009 — Article 61(10)?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.010 — Novel/Innovative?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.011 — Clinical Performance Studies?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.012 — Exempt from CECP?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.016 — System or Procedure Pack?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.017 — Does the device have accessories?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.018 — MDN1208 Class IIa reusable → Class Ir?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.020 — Number of device variants</label>
-                    <input type="number" min="0" value="0">
-                </div>
-
-                <!-- CONDITION: MDS 1005 ticked -->
-                <div class="sterility-block hidden" id="mdr-sterility">
-                    <h4>Sterility — MDS 1005</h4>
-                    <div class="field">
-                        <label>S2.001 — Device supplied sterile?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                    <div class="field">
-                        <label>S2.002 — Intended to be sterilised by end user?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                    <div class="field">
-                        <label>S2.003 — Sterilization Agent</label>
-                        <select>
-                            <option value="">— Select —</option>
-                            <option>EO (Ethylene Oxide)</option>
-                            <option>Gamma Irradiation</option>
-                            <option>Steam</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>S2.004 — Total number of devices</label>
-                        <input type="number" min="1">
-                    </div>
-                    <div class="field">
-                        <label>S2.005 — Number of Sterilization Validation Reports</label>
-                        <input type="number" min="0">
-                    </div>
-                    <div class="field">
-                        <label>S2.006 — Aseptic Process?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                    <div class="field">
-                        <label>S2.007 — End user disinfection?</label>
-                        <select><option value="no">No</option><option value="yes">Yes</option></select>
-                    </div>
-                </div>
-            </div>
+            <h2>4. EU MDR — Devices</h2>
+            <p class="hint">Table 2 — One entry per device / technical documentation</p>
+            <div id="mdr-devices-container"></div>
+            <div id="mdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
+            <div id="mdr-limit" class="limit-msg hidden">Maximum 10 devices reached. Please <a href="Device_Template.xlsx" download>download the template</a> or contact your Designated Operative.</div>
+            <button id="mdr-add-btn" class="btn-secondary" onclick="addDevice('mdr')">+ Add EU MDR Device</button>
         </section>
 
-        <!-- CONDITION: UK MDR ticked -->
-        <section id="uk-mdr-section" class="form-section hidden">
-            <h2>6. UK MDR — Device</h2>
+        <!-- ═══════════ TABLE 3: EU IVDR ═══════════ -->
+        <section id="eu-ivdr-section" class="form-section hidden">
+            <h2>5. EU IVDR — Devices</h2>
+            <p class="hint">Table 3 — One entry per device / technical documentation</p>
+            <div id="ivdr-devices-container"></div>
+            <div id="ivdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
+            <div id="ivdr-limit" class="limit-msg hidden">Maximum 10 devices reached. Please <a href="Device_Template.xlsx" download>download the template</a> or contact your Designated Operative.</div>
+            <button id="ivdr-add-btn" class="btn-secondary" onclick="addDevice('ivdr')">+ Add EU IVDR Device</button>
+        </section>
 
-            <div class="card">
-                <h3>UK MDR Device 1</h3>
-                <div class="field">
-                    <label>2.001 — Device Name</label>
-                    <input type="text" placeholder="e.g. Surgical mesh">
-                </div>
-                <div class="field">
-                    <label>UK2.002 — Device Classification</label>
-                    <select>
-                        <option value="">— Select —</option>
-                        <option>Class Im</option>
-                        <option>Class IIa</option>
-                        <option>Class IIb</option>
-                        <option>Class III</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>2.010 — Novel/Complex Device?</label>
-                    <select><option value="no">No</option><option value="yes">Yes</option></select>
-                </div>
-                <div class="field">
-                    <label>2.020 — Number of device variants</label>
-                    <input type="number" min="0" value="0">
-                </div>
-            </div>
+        <!-- ═══════════ TABLE 4: UK MDR ═══════════ -->
+        <section id="uk-mdr-section" class="form-section hidden">
+            <h2>6. UK MDR — Devices</h2>
+            <p class="hint">Table 4 — One entry per device / technical documentation</p>
+            <div id="ukmdr-devices-container"></div>
+            <div id="ukmdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
+            <div id="ukmdr-limit" class="limit-msg hidden">Maximum 10 devices reached. Please <a href="Device_Template.xlsx" download>download the template</a> or <a href="javascript:void(0)" onclick="openCountryModal()">
+        contact your Designated Operative
+    </a>.</div>
+            <button id="ukmdr-add-btn" class="btn-secondary" onclick="addDevice('ukmdr')">+ Add UK MDR Device</button>
+        </section>
+
+        <!-- ═══════════ TABLE 5: UK IVDR ═══════════ -->
+        <section id="uk-ivdr-section" class="form-section hidden">
+            <h2>7. UK MDR Part IV (IVDR) — Devices</h2>
+            <p class="hint">Table 5 — One entry per device</p>
+            <div id="ukivdr-devices-container"></div>
+            <div id="ukivdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
+            <div id="ukivdr-limit" class="limit-msg hidden">Maximum 10 devices reached. Please <a href="Device_Template.xlsx" download>download the template</a> or <a href="javascript:void(0)" onclick="openCountryModal()">
+        contact your Designated Operative
+    </a>.</div>
+            <button id="ukivdr-add-btn" class="btn-secondary" onclick="addDevice('ukivdr')">+ Add UK IVDR Device</button>
         </section>
 
     </main>
 
-    <footer>
-        <p>Mock prototype — for rule validation only</p>
-    </footer>
+    <!-- ═══════════ TEMPLATES ═══════════ -->
 
-    <script src="form.js"></script>
+    <!-- Site Template -->
+    <template id="site-template">
+        <div class="card site-card">
+            <h3 class="site-title accordion-toggle">Site <span class="site-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeSite(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>B.004 — Effective number of personnel (FTE)</label><input type="number" min="1" placeholder="e.g. 50"></div>
+                <div class="field"><label>B.005 — Number of clean rooms used for device manufacturing</label><input type="number" min="0" placeholder="e.g. 2"></div>
+                <div class="field">
+                    <label>B.006 — Activities</label>
+                    <select><option value="">— Select —</option></select>
+                </div>
+                <div class="field"><label>B.007 — Number of shifts</label><input type="number" min="1" max="4" value="1"></div>
+            </div>
+        </div>
+    </template>
+
+    <!-- EU MDR Device Template (Table 2) -->
+    <template id="mdr-device-template">
+        <div class="card device-card" data-scheme="mdr">
+            <h3 class="device-title accordion-toggle">MDR Device <span class="device-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeDevice(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>#2.001 — Device Name</label><input type="text" placeholder="e.g. Hip implant"></div>
+                <div class="field">
+                    <label>#2.002 — Device Classification</label>
+                    <select class="device-class-select" onchange="updateDeviceClass(this)">
+                        <option value="">— Select —</option>
+                        <option value="IIb_III">Class IIb / Class III</option>
+                        <option value="IIa">Class IIa</option>
+                        <option value="I">Class I (Ir / Im)</option>
+                        <option value="spp">System & Procedure Pack (Art. 22)</option>
+                    </select>
+                </div>
+                <div class="field"><label>#2.003 — Number of device variants within the same technical documentation</label><input type="number" min="0" value="0"></div>
+
+                <!-- Table 2.1: Class IIb / III -->
+                <div class="classification-block hidden" data-class="IIb_III">
+                    <h4 class="block-title">Class IIb / III — Additional Fields</h4>
+                    <div class="field"><label>#2.004 — MDN/MDA Code</label><select><option value="">— Select —</option><option>MDA0315</option><option>MDA0317</option><option>MDN1208</option><option>Other</option></select></div>
+                    <div class="field">
+                        <label>#2.005 — MDS Codes</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" data-mds="1001" onchange="toggleMDS(this)"> MDS 1001</label>
+                            <label><input type="checkbox" data-mds="1003" onchange="toggleMDS(this)"> MDS 1003</label>
+                            <label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label>
+                            <label><input type="checkbox"> MDS 1006</label><label><input type="checkbox"> MDS 1007</label>
+                            <label><input type="checkbox"> MDS 1008</label><label><input type="checkbox"> MDS 1009</label>
+                            <label><input type="checkbox"> MDS 1012</label><label><input type="checkbox"> MDS 1014</label>
+                        </div>
+                    </div>
+                    <div class="field"><label>#2.006 — EMDN Code</label><input type="text" placeholder="e.g. V030201"></div>
+                    <div class="field"><label>#2.007 — Clinical Performance Studies Available?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field"><label>#2.008 — Device exempt from CECP?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="conditional-block hidden" data-condition="mds-1001"><div class="field"><label>#2.009 — MDS 1001: Number of medicinal substances</label><input type="number" min="0" value="0"></div></div>
+                    <div class="conditional-block hidden" data-condition="mds-1003">
+                        <div class="field"><label>#2.010 — MDS 1003: Number of animal tissue/derivative</label><input type="number" min="0" value="0"></div>
+                        <div class="field"><label>#2.011 — MDS 1003: Does the manufacturing process employ raw material containing tallow and these are exempt from Rule 18?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    </div>
+                    <div class="field hidden ai-field"><label>#2.012 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Is the device supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Is the device intended to be sterilised by the end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 2.2: Class IIa -->
+                <div class="classification-block hidden" data-class="IIa">
+                    <h4 class="block-title">Class IIa — Additional Fields</h4>
+                    <div class="field"><label>#2.004 — MDN/MDA Code</label><select class="mdn-code-select" onchange="updateMDNCode(this)"><option value="">— Select —</option><option value="MDA0315">MDA0315</option><option value="MDA0317">MDA0317</option><option value="MDN1208">MDN1208</option><option>Other</option></select></div>
+                    <div class="field">
+                        <label>#2.005 — MDS Codes</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" data-mds="1001" onchange="toggleMDS(this)"> MDS 1001</label>
+                            <label><input type="checkbox" data-mds="1003" onchange="toggleMDS(this)"> MDS 1003</label>
+                            <label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label>
+                            <label><input type="checkbox"> MDS 1006</label><label><input type="checkbox"> MDS 1007</label><label><input type="checkbox"> MDS 1008</label>
+                        </div>
+                    </div>
+                    <div class="field"><label>#2.007 — Clinical Performance Studies?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="conditional-block hidden" data-condition="mds-1001"><div class="field"><label>#2.009 — Number of medicinal substances</label><input type="number" min="0" value="0"></div></div>
+                    <div class="conditional-block hidden" data-condition="mds-1003">
+                        <div class="field"><label>#2.010 — Number of animal tissue/derivative</label><input type="number" min="0" value="0"></div>
+                        <div class="field"><label>#2.011 — Tallow exempt from Rule 18?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    </div>
+                    <div class="conditional-block hidden" data-condition="mdn-MDN1208"><div class="field"><label>#2.013 — MDN1208 Class IIa devices that if sold reusable would be Class Ir?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div></div>
+                    <div class="conditional-block hidden" data-condition="mdn-MDA0317">
+                        <div class="field"><label>#2.014 — Article 61(10) route (disinfectants, contact lens solutions, sterilizers)?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#2.015 — Number of Sterilization methods</label><input type="number" min="0" value="0"></div>
+                        <div class="field"><label>#2.016 — Number of washer disinfection validations</label><input type="number" min="0" value="0"></div>
+                        <div class="field"><label>#2.017 — Number of Cleaning Validations</label><input type="number" min="0" value="0"></div>
+                    </div>
+                    <div class="field hidden ai-field"><label>#2.012 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Is the device supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 2.2: Class I -->
+                <div class="classification-block hidden" data-class="I">
+                    <h4 class="block-title">Class I — Additional Fields</h4>
+                    <div class="field"><label>#2.005 — MDS Codes</label><div class="checkbox-group"><label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label></div></div>
+                    <div class="field hidden ai-field"><label>#2.012 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Is the device supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 2.2: System & Procedure Pack -->
+                <div class="classification-block hidden" data-class="spp">
+                    <h4 class="block-title">System & Procedure Pack (Art. 22)</h4>
+                    <div class="field"><label>#S2.001 — Is the device supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- EU IVDR Device Template (Table 3) -->
+    <template id="ivdr-device-template">
+        <div class="card device-card" data-scheme="ivdr">
+            <h3 class="device-title accordion-toggle">IVDR Device <span class="device-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeDevice(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>#3.001 — Device Name</label><input type="text" placeholder="e.g. Rapid Antigen Test"></div>
+                <div class="field">
+                    <label>#3.002 — Classification</label>
+                    <select class="device-class-select" onchange="updateDeviceClass(this)">
+                        <option value="">— Select —</option>
+                        <option value="C">Class C</option>
+                        <option value="B">Class B</option>
+                        <option value="A">Class A</option>
+                    </select>
+                </div>
+                <div class="field"><label>#3.003 — Number of device variants</label><input type="number" min="0" value="0"></div>
+                <div class="field"><label>#3.004 — If the device has accessories, how many?</label><input type="number" min="0" value="0"></div>
+
+                <!-- Table 3.1: Class C -->
+                <div class="classification-block hidden" data-class="C">
+                    <h4 class="block-title">Class C — Additional Fields</h4>
+                    <div class="field"><label>#3.005 — IVR code</label><select class="ivr-select" onchange="toggleIVR(this)"><option value="">— Select —</option><option value="other">Other</option><option value="IVS1005">IVS 1005 (Sterile)</option></select></div>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group"><label><input type="checkbox"> IVS 1001</label><label><input type="checkbox"> IVS 1002</label><label><input type="checkbox"> IVS 1006</label><label><input type="checkbox"> IVS 1007</label><label><input type="checkbox"> IVS 1008</label><label><input type="checkbox"> IVS 1010</label></div></div>
+                    <div class="field"><label>#3.007 — Main IVP code</label><select><option value="">— Select —</option><option>IVP 01</option><option>IVP 02</option><option>IVP 03</option><option>IVP 04</option></select></div>
+                    <div class="field"><label>#3.008 — EMDN code</label><input type="text" placeholder="e.g. V030201"></div>
+                    <div class="field"><label>#3.009 — Number of Standalone calibrators</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.010 — Number of controls</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.011 — For multiplexed devices: how many analytes/biomarkers?</label><input type="number" min="0" value="0"></div>
+                    <div class="sterility-block hidden" data-condition="ivr-sterility"><h4>Sterility — IVS 1005</h4><div class="field"><label>#S1.001 — Sterilisation Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div></div>
+                    <div class="field hidden ai-field"><label>#1.013 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.014 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+
+                <!-- Table 3.2: Class B -->
+                <div class="classification-block hidden" data-class="B">
+                    <h4 class="block-title">Class B — Additional Fields</h4>
+                    <div class="field"><label>#3.005 — IVR code</label><select class="ivr-select" onchange="toggleIVR(this)"><option value="">— Select —</option><option value="other">Other</option><option value="IVS1005">IVS 1005 (Sterile)</option></select></div>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group"><label><input type="checkbox"> IVS 1001</label><label><input type="checkbox"> IVS 1002</label><label><input type="checkbox"> IVS 1006</label><label><input type="checkbox"> IVS 1007</label><label><input type="checkbox"> IVS 1008</label><label><input type="checkbox"> IVS 1010</label></div></div>
+                    <div class="field"><label>#3.009 — Number of Standalone calibrators</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.010 — Number of controls</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.011 — For multiplexed devices: how many analytes/biomarkers?</label><input type="number" min="0" value="0"></div>
+                    <div class="sterility-block hidden" data-condition="ivr-sterility"><h4>Sterility — IVS 1005</h4><div class="field"><label>#S1.001 — Sterilisation Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div></div>
+                    <div class="field hidden ai-field"><label>Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.011 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+
+                <!-- Table 3.3: Class A -->
+                <div class="classification-block hidden" data-class="A">
+                    <h4 class="block-title">Class A — Additional Fields</h4>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group"><label><input type="checkbox"> IVS 1001</label><label><input type="checkbox"> IVS 1002</label><label><input type="checkbox"> IVS 1006</label></div></div>
+                    <div class="sterility-block hidden" data-condition="ivr-sterility"><h4>Sterility — IVS 1005</h4><div class="field"><label>#S1.001 — Sterilisation Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div></div>
+                    <div class="field hidden ai-field"><label>Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.011 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- UK MDR Device Template (Table 4) -->
+    <template id="ukmdr-device-template">
+        <div class="card device-card" data-scheme="ukmdr">
+            <h3 class="device-title accordion-toggle">UK MDR Device <span class="device-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeDevice(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>#4.001 — Device Name</label><input type="text" placeholder="e.g. Surgical mesh"></div>
+                <div class="field">
+                    <label>#4.002 — Device Classification</label>
+                    <select class="device-class-select" onchange="updateDeviceClass(this)">
+                        <option value="">— Select —</option>
+                        <option value="IIb_III">Class IIb / Class III</option>
+                        <option value="IIa">Class IIa</option>
+                        <option value="I">Class I</option>
+                        <option value="spp">System & Procedure Pack</option>
+                    </select>
+                </div>
+
+                <!-- Table 4.1: Class IIb / III -->
+                <div class="classification-block hidden" data-class="IIb_III">
+                    <h4 class="block-title">Class IIb / III — Additional Fields</h4>
+                    <div class="field"><label>#4.003 — MDN/MDA Code</label><select><option value="">— Select —</option><option>MDA0315</option><option>MDA0317</option><option>MDN1208</option><option>Other</option></select></div>
+                    <div class="field">
+                        <label>#4.004 — MDS Codes</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" data-mds="1001" onchange="toggleMDS(this)"> MDS 1001</label>
+                            <label><input type="checkbox" data-mds="1003" onchange="toggleMDS(this)"> MDS 1003</label>
+                            <label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label>
+                            <label><input type="checkbox"> MDS 1006</label><label><input type="checkbox"> MDS 1007</label><label><input type="checkbox"> MDS 1008</label>
+                        </div>
+                    </div>
+                    <div class="field"><label>#4.005 — GPMD Code</label><input type="text" placeholder="e.g. V030201"></div>
+                    <div class="field"><label>#4.006 — Clinical Performance Studies?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="conditional-block hidden" data-condition="mds-1001"><div class="field"><label>#4.007 — MDS 1001: Number of medicinal substances</label><input type="number" min="0" value="0"></div></div>
+                    <div class="conditional-block hidden" data-condition="mds-1003">
+                        <div class="field"><label>#4.008 — MDS 1003: Number of animal tissue/derivative</label><input type="number" min="0" value="0"></div>
+                        <div class="field"><label>#4.009 — MDS 1003: Does the code apply to Virology or Transmissible Spongiform Encephalopathies?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    </div>
+                    <div class="field hidden ai-field"><label>#4.010 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden innovative-field"><label>#4.011 — Does the device claim innovative characteristics compared with state-of-the-art?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Is the device supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO (Ethylene Oxide)</option><option>Gamma Irradiation</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 4.2: Class IIa -->
+                <div class="classification-block hidden" data-class="IIa">
+                    <h4 class="block-title">Class IIa — Additional Fields</h4>
+                    <div class="field"><label>#4.003 — MDN/MDA Code</label><select><option value="">— Select —</option><option>MDA0315</option><option>MDA0317</option><option>MDN1208</option><option>Other</option></select></div>
+                    <div class="field"><label>#4.004 — MDS Codes</label><div class="checkbox-group"><label><input type="checkbox" data-mds="1001" onchange="toggleMDS(this)"> MDS 1001</label><label><input type="checkbox" data-mds="1003" onchange="toggleMDS(this)"> MDS 1003</label><label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label><label><input type="checkbox"> MDS 1006</label><label><input type="checkbox"> MDS 1007</label><label><input type="checkbox"> MDS 1008</label></div></div>
+                    <div class="field"><label>#4.006 — Clinical Performance Studies?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="conditional-block hidden" data-condition="mds-1001"><div class="field"><label>#4.007 — Number of medicinal substances</label><input type="number" min="0" value="0"></div></div>
+                    <div class="conditional-block hidden" data-condition="mds-1003"><div class="field"><label>#4.008 — Number of animal tissue/derivative</label><input type="number" min="0" value="0"></div><div class="field"><label>#4.009 — Virology / TSE?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div></div>
+                    <div class="field hidden ai-field"><label>#4.010 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden innovative-field"><label>#4.011 — Innovative characteristics?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO</option><option>Gamma</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 4.3: Class I -->
+                <div class="classification-block hidden" data-class="I">
+                    <h4 class="block-title">Class I — Additional Fields</h4>
+                    <div class="field"><label>#4.004 — MDS Codes</label><div class="checkbox-group"><label><input type="checkbox" data-mds="1005" onchange="toggleMDS(this)"> MDS 1005 (Sterile)</label></div></div>
+                    <div class="field hidden ai-field"><label>#4.010 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden innovative-field"><label>#4.011 — Innovative characteristics?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="sterility-block hidden" data-condition="mds-1005">
+                        <h4>Sterility — MDS 1005</h4>
+                        <div class="field"><label>#S2.001 — Supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                        <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO</option><option>Gamma</option><option>Steam</option><option>Other</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Table 4.4: System & Procedure Pack -->
+                <div class="classification-block hidden" data-class="spp">
+                    <h4 class="block-title">System & Procedure Pack</h4>
+                    <div class="field"><label>#S2.001 — Supplied sterile?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field"><label>#S2.002 — Sterilised by end user?</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field"><label>#S2.003 — Sterilization Agent</label><select><option value="">— Select —</option><option>EO</option><option>Gamma</option><option>Steam</option><option>Other</option></select></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- UK IVDR Device Template (Table 5) -->
+    <template id="ukivdr-device-template">
+        <div class="card device-card" data-scheme="ukivdr">
+            <h3 class="device-title accordion-toggle">UK IVDR Device <span class="device-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeDevice(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>#5.001 — Device Name</label><input type="text" placeholder="e.g. Blood glucose test"></div>
+                <div class="field"><label>#5.002 — Classification</label><select><option value="">— Select —</option><option>Class A</option><option>Class B</option><option>Class C</option><option>Class D</option></select></div>
+                <div class="field"><label>#5.003 — MDN/MDA Code</label><select><option value="">— Select —</option><option>Other</option></select></div>
+                <div class="field"><label>#5.004 — GPMD Code</label><input type="text" placeholder="e.g. V030201"></div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Back to top -->
+    <button id="back-to-top" class="btn-top hidden" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+
+<!-- ═══════════ MODAL ═══════════ -->
+<div id="country-help-modal" class="hidden simple-modal">
+    <div class="simple-modal-content">
+        <h3>Support contact</h3>
+
+        <p id="contact-text">Default contact info</p>
+
+        <button onclick="closeCountryModal()">Close</button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>Mock prototype — for rule validation only</p>
+</footer>
+
+<!-- JS -->
+<script src="form.js"></script>
+
+
+ 
 </body>
 </html>

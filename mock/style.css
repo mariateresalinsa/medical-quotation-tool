@@ -35,11 +35,10 @@ header .subtitle { color: var(--text-light); font-size: 13px; margin-top: 2px; }
 .hint { color: var(--text-light); font-size: 12px; margin-bottom: 12px; }
 
 .field { margin-bottom: 14px; }
-.field > label, .sub-field > label {
+.field > label {
     display: block; font-size: 13px; font-weight: 600;
     color: var(--text-light); margin-bottom: 5px;
 }
-.sub-field { margin-top: 8px; padding-left: 16px; }
 
 select, input[type="text"], input[type="number"] {
     width: 100%; padding: 9px 12px; border: 1px solid var(--border);
@@ -58,6 +57,7 @@ select:focus, input:focus {
 }
 .checkbox-group input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--blue); }
 
+/* Cards */
 .card {
     background: var(--bg); border: 1px solid var(--border);
     border-radius: 6px; padding: 16px; margin-bottom: 10px; position: relative;
@@ -70,6 +70,35 @@ select:focus, input:focus {
 }
 .card .btn-remove:hover { color: #dc2626; }
 
+/* Accordion */
+.accordion-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+.accordion-toggle:hover { color: var(--blue-dark); }
+.accordion-icon {
+    font-size: 10px;
+    margin-left: 6px;
+    color: var(--text-light);
+}
+
+/* Classification blocks */
+.classification-block {
+    margin-top: 16px; padding: 16px;
+    background: var(--blue-light); border: 1px solid #c5ddf0; border-radius: 6px;
+}
+.block-title {
+    font-size: 12px; font-weight: 600; color: var(--blue);
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+
+/* Conditional sub-blocks */
+.conditional-block {
+    margin-top: 8px; padding: 12px;
+    background: #f0f4f8; border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0;
+}
+
+/* Sterility blocks */
 .sterility-block {
     margin-top: 12px; padding: 14px; background: #fef9e7;
     border: 1px solid #E6B800; border-radius: 6px;
@@ -79,13 +108,67 @@ select:focus, input:focus {
     margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.3px;
 }
 
+/* Buttons */
 .btn-secondary {
     background: var(--white); color: var(--blue); border: 1px solid var(--blue);
     padding: 7px 18px; border-radius: 6px; font-size: 13px;
-    font-weight: 600; cursor: pointer;
+    font-weight: 600; cursor: pointer; margin-top: 8px;
 }
 .btn-secondary:hover { background: var(--blue-light); }
+.btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Warning / Limit messages */
+.warning {
+    margin: 10px 0; padding: 10px 14px;
+    background: #fef9e7; border: 1px solid #E6B800; border-radius: 6px;
+    font-size: 12px; color: #92600a;
+}
+.limit-msg {
+    margin: 10px 0; padding: 10px 14px;
+    background: #fef2f2; border: 1px solid #dc2626; border-radius: 6px;
+    font-size: 12px; color: #991b1b;
+}
+.limit-msg a, .warning a { color: var(--blue); font-weight: 600; }
+
+/* Back to top */
+.btn-top {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--blue-dark); color: var(--white);
+    border: none; border-radius: 50%; width: 44px; height: 44px;
+    font-size: 16px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+.btn-top:hover { background: var(--blue); }
 
 .hidden { display: none; }
 
 footer { text-align: center; padding: 24px; color: var(--text-light); font-size: 11px; }
+
+
+
+/* for DO contact */
+
+.simple-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.simple-modal-content {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    width: 300px;
+    font-size: 13px;
+}
+
+/* IMPORTANTISSIMO */
+.hidden {
+    display: none !important;
+}
