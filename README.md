@@ -39,3 +39,4 @@ medical-quotation-tool/
 ## How to run
 
 Open `mock/index.html` in any browser. No server required.
+Or just click on here: https://mariateresalinsa.github.io/medical-quotation-tool/mock/
