@@ -49,13 +49,43 @@ select:focus, input:focus {
     outline: none; border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(27, 108, 176, 0.1);
 }
+.mda-code-long { font-size: 12px; }
 
 .checkbox-group { display: flex; flex-wrap: wrap; gap: 14px; }
+.checkbox-group.vertical { flex-direction: column; gap: 8px; }
 .checkbox-group label {
     font-size: 13px; font-weight: 400;
-    display: flex; align-items: center; gap: 5px; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 5px; cursor: pointer;
 }
-.checkbox-group input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--blue); }
+.checkbox-group input[type="checkbox"] {
+    width: 15px; height: 15px; accent-color: var(--blue);
+    margin-top: 2px; flex-shrink: 0;
+}
+
+/* B.001 Standards groups */
+.standards-group { margin-top: 12px; }
+.group-header {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; align-items: flex-start; gap: 6px; cursor: pointer;
+}
+.group-header input[type="checkbox"] {
+    width: 16px; height: 16px; accent-color: var(--blue);
+    margin-top: 3px; flex-shrink: 0;
+}
+.suboptions {
+    margin: 8px 0 4px 28px; padding: 10px 14px;
+    background: #f9fafb; border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.suboptions label {
+    font-size: 12px; font-weight: 400;
+    display: flex; align-items: flex-start; gap: 5px; cursor: pointer;
+}
+.suboptions input[type="checkbox"] {
+    width: 14px; height: 14px; accent-color: var(--blue);
+    margin-top: 2px; flex-shrink: 0;
+}
+.suboptions .note { font-size: 11px; color: var(--orange); font-style: italic; display: block; margin-top: 2px; }
 
 /* Cards */
 .card {
@@ -71,16 +101,9 @@ select:focus, input:focus {
 .card .btn-remove:hover { color: #dc2626; }
 
 /* Accordion */
-.accordion-toggle {
-    cursor: pointer;
-    user-select: none;
-}
+.accordion-toggle { cursor: pointer; user-select: none; }
 .accordion-toggle:hover { color: var(--blue-dark); }
-.accordion-icon {
-    font-size: 10px;
-    margin-left: 6px;
-    color: var(--text-light);
-}
+.accordion-icon { font-size: 10px; margin-left: 6px; color: var(--text-light); }
 
 /* Classification blocks */
 .classification-block {
@@ -92,13 +115,12 @@ select:focus, input:focus {
     margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.3px;
 }
 
-/* Conditional sub-blocks */
 .conditional-block {
     margin-top: 8px; padding: 12px;
     background: #f0f4f8; border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0;
 }
 
-/* Sterility blocks */
+/* Sterility */
 .sterility-block {
     margin-top: 12px; padding: 14px; background: #fef9e7;
     border: 1px solid #E6B800; border-radius: 6px;
@@ -107,6 +129,24 @@ select:focus, input:focus {
     font-size: 12px; font-weight: 600; color: var(--orange);
     margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.3px;
 }
+
+/* Sterilization method cards (repeatable) */
+.sterilization-methods-container { margin-top: 8px; }
+.sterilization-method-card {
+    background: #fff8e1; border: 1px dashed #E6B800; border-radius: 6px;
+    padding: 12px; margin-bottom: 8px; position: relative;
+}
+.btn-add-sterilization {
+    background: none; color: var(--orange); border: 1px solid var(--orange);
+    padding: 5px 14px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; margin-top: 6px;
+}
+.btn-add-sterilization:hover { background: #fef9e7; }
+.btn-remove-small {
+    background: none; border: none; color: #dc2626;
+    font-size: 11px; cursor: pointer; margin-top: 6px;
+}
+.btn-remove-small:hover { text-decoration: underline; }
 
 /* Buttons */
 .btn-secondary {
@@ -117,7 +157,6 @@ select:focus, input:focus {
 .btn-secondary:hover { background: var(--blue-light); }
 .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Warning / Limit messages */
 .warning {
     margin: 10px 0; padding: 10px 14px;
     background: #fef9e7; border: 1px solid #E6B800; border-radius: 6px;
@@ -130,7 +169,6 @@ select:focus, input:focus {
 }
 .limit-msg a, .warning a { color: var(--blue); font-weight: 600; }
 
-/* Back to top */
 .btn-top {
     position: fixed; bottom: 24px; right: 24px;
     background: var(--blue-dark); color: var(--white);
@@ -141,34 +179,4 @@ select:focus, input:focus {
 .btn-top:hover { background: var(--blue); }
 
 .hidden { display: none; }
-
 footer { text-align: center; padding: 24px; color: var(--text-light); font-size: 11px; }
-
-
-
-/* for DO contact */
-
-.simple-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 9999;
-}
-
-.simple-modal-content {
-    background: white;
-    padding: 18px;
-    border-radius: 10px;
-    width: 300px;
-    font-size: 13px;
-}
-
-/* IMPORTANTISSIMO */
-.hidden {
-    display: none !important;
-}

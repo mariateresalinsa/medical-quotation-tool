@@ -1,21 +1,11 @@
 /* ============================================================
    form.js — Conditional logic faithful to Client_Form.xlsx
-   
-   TABLE 1: Baseline (B.001–B.012)
-   TABLE 2: EU MDR (#2.xxx) — sub-tables by classification
-   TABLE 3: EU IVDR (#3.xxx) — sub-tables by classification
-   TABLE 4: UK MDR (#4.xxx) — sub-tables by classification
-   TABLE 5: UK IVDR (#5.xxx)
    ============================================================ */
 
-var deviceCounts = { mdr: 0, ivdr: 0, ukmdr: 0, ukivdr: 0 };
+var deviceCounts = { mdr: 0, ukmdr: 0, ukivdr: 0 };
 var siteCount = 0;
 var WARN_AT = 5;
 var MAX_DEVICES = 10;
-
-/* ═══════════════════════════════════════════
-   HELPERS
-   ═══════════════════════════════════════════ */
 
 function toggle(id, show) {
     var el = document.getElementById(id);
@@ -28,18 +18,20 @@ function selected() {
 }
 
 /* ═══════════════════════════════════════════
-   LEVEL 1: Standards → sections
+   B.001: Standards → sections + sub-options
    ═══════════════════════════════════════════ */
 
 function updateSections() {
     var s = selected();
-    var hasAny   = s.length > 0;
-    var hasISO   = s.indexOf('iso_13485') !== -1;
-    var hasIVDR  = s.indexOf('eu_ivdr') !== -1;
-    var hasMDR   = s.indexOf('eu_mdr') !== -1;
-    var hasUKMDR = s.indexOf('uk_mdr') !== -1;
+    var hasAny    = s.length > 0;
+    var hasISO    = s.indexOf('iso_13485') !== -1;
+    var hasMDR    = s.indexOf('eu_mdr') !== -1;
+    var hasUKMDR  = s.indexOf('uk_mdr') !== -1;
     var hasUKIVDR = s.indexOf('uk_ivdr') !== -1;
-    var hasReg   = hasIVDR || hasMDR || hasUKMDR || hasUKIVDR;
+    var hasReg    = hasMDR || hasUKMDR || hasUKIVDR;
+
+    toggle('eu-mdr-suboptions', hasMDR);
+    toggle('uk-mdr-suboptions', hasUKMDR);
 
     toggle('baseline-section',  hasAny);
     toggle('facilities-section', hasAny);
@@ -49,7 +41,6 @@ function updateSections() {
     toggle('field-b011',        hasReg);
     toggle('field-b012',        hasReg);
     toggle('eu-mdr-section',    hasMDR);
-    toggle('eu-ivdr-section',   hasIVDR);
     toggle('uk-mdr-section',    hasUKMDR);
     toggle('uk-ivdr-section',   hasUKIVDR);
 
@@ -59,7 +50,7 @@ function updateSections() {
 }
 
 /* ═══════════════════════════════════════════
-   CROSS-DEVICE: B.011 AI, B.012 Innovative
+   B.011 AI / B.012 Innovative
    ═══════════════════════════════════════════ */
 
 function updateAIFields() {
@@ -77,7 +68,7 @@ function updateInnovativeFields() {
 }
 
 /* ═══════════════════════════════════════════
-   SITES: add / remove / renumber
+   SITES
    ═══════════════════════════════════════════ */
 
 function addSite() {
@@ -87,22 +78,19 @@ function addSite() {
     clone.querySelector('.site-num').textContent = siteCount;
     var container = document.getElementById('sites-container');
     container.appendChild(clone);
-    // Attach accordion to new site
     var cards = container.querySelectorAll('.site-card');
     var last = cards[cards.length - 1];
-    last.querySelector('.accordion-toggle').addEventListener('click', function() {
-        toggleAccordion(this);
-    });
+    last.querySelector('.accordion-toggle').addEventListener('click', function() { toggleAccordion(this); });
 }
 
 function removeSite(btn) {
     btn.closest('.site-card').remove();
     siteCount--;
-    renumberItems('sites-container', '.site-card', '.site-num', 'Site');
+    renumberItems('sites-container', '.site-card', '.site-num');
 }
 
 /* ═══════════════════════════════════════════
-   DEVICES: add / remove / renumber / limits
+   DEVICES
    ═══════════════════════════════════════════ */
 
 function addDevice(scheme) {
@@ -116,12 +104,9 @@ function addDevice(scheme) {
     var container = document.getElementById(scheme + '-devices-container');
     container.appendChild(clone);
 
-    // Attach accordion
     var cards = container.querySelectorAll('.device-card');
     var last = cards[cards.length - 1];
-    last.querySelector('.accordion-toggle').addEventListener('click', function() {
-        toggleAccordion(this);
-    });
+    last.querySelector('.accordion-toggle').addEventListener('click', function() { toggleAccordion(this); });
 
     updateAIFields();
     updateInnovativeFields();
@@ -133,13 +118,11 @@ function removeDevice(btn) {
     var scheme = card.getAttribute('data-scheme');
     card.remove();
     deviceCounts[scheme]--;
-
-    var schemeName = { mdr: 'MDR', ivdr: 'IVDR', ukmdr: 'UK MDR', ukivdr: 'UK IVDR' }[scheme];
-    renumberItems(scheme + '-devices-container', '.device-card', '.device-num', schemeName + ' Device');
+    renumberItems(scheme + '-devices-container', '.device-card', '.device-num');
     checkThresholds(scheme);
 }
 
-function renumberItems(containerId, cardSelector, numSelector, prefix) {
+function renumberItems(containerId, cardSelector, numSelector) {
     var cards = document.getElementById(containerId).querySelectorAll(cardSelector);
     cards.forEach(function(card, i) {
         card.querySelector(numSelector).textContent = i + 1;
@@ -148,19 +131,16 @@ function renumberItems(containerId, cardSelector, numSelector, prefix) {
 
 function checkThresholds(scheme) {
     var count = deviceCounts[scheme];
-    console.log('checkThresholds:', scheme, 'count:', count);
-    
-    var warningEl = document.getElementById(scheme + '-warning');
-    var limitEl = document.getElementById(scheme + '-limit');
-    var btn = document.getElementById(scheme + '-add-btn');
-    
-    if (warningEl) warningEl.classList.toggle('hidden', !(count >= WARN_AT && count < MAX_DEVICES));
-    if (limitEl) limitEl.classList.toggle('hidden', !(count >= MAX_DEVICES));
-    if (btn) btn.disabled = count >= MAX_DEVICES;
+    var w = document.getElementById(scheme + '-warning');
+    var l = document.getElementById(scheme + '-limit');
+    var b = document.getElementById(scheme + '-add-btn');
+    if (w) w.classList.toggle('hidden', !(count >= WARN_AT && count < MAX_DEVICES));
+    if (l) l.classList.toggle('hidden', !(count >= MAX_DEVICES));
+    if (b) b.disabled = count >= MAX_DEVICES;
 }
 
 /* ═══════════════════════════════════════════
-   DEVICE CLASSIFICATION → field blocks
+   CLASSIFICATION → field blocks
    ═══════════════════════════════════════════ */
 
 function updateDeviceClass(selectEl) {
@@ -184,7 +164,6 @@ function toggleMDS(checkbox) {
     var mdsCode = checkbox.getAttribute('data-mds');
     var visibleBlock = card.querySelector('.classification-block:not(.hidden)');
     if (!visibleBlock) return;
-
     visibleBlock.querySelectorAll('[data-condition="mds-' + mdsCode + '"]').forEach(function(el) {
         el.classList.toggle('hidden', !checkbox.checked);
     });
@@ -208,15 +187,28 @@ function updateMDNCode(selectEl) {
 }
 
 /* ═══════════════════════════════════════════
-   IVR CODE → sterility (IVDR)
+   STERILIZATION: + Add another method
    ═══════════════════════════════════════════ */
 
-function toggleIVR(selectEl) {
-    var card = selectEl.closest('.device-card');
-    var visibleBlock = card.querySelector('.classification-block:not(.hidden)');
-    if (!visibleBlock) return;
-    var sterility = visibleBlock.querySelector('[data-condition="ivr-sterility"]');
-    if (sterility) sterility.classList.toggle('hidden', selectEl.value !== 'IVS1005');
+function addSterilizationMethod(btn) {
+    var container = btn.previousElementSibling;
+    while (container && !container.classList.contains('sterilization-methods-container')) {
+        container = container.previousElementSibling;
+    }
+    if (!container) return;
+
+    var template = document.getElementById('sterilization-method-template');
+    var clone = template.content.cloneNode(true);
+    container.appendChild(clone);
+}
+
+function removeSterilizationMethod(btn) {
+    var card = btn.closest('.sterilization-method-card');
+    var container = card.parentElement;
+    // Don't remove if it's the last one
+    if (container.querySelectorAll('.sterilization-method-card').length > 1) {
+        card.remove();
+    }
 }
 
 /* ═══════════════════════════════════════════
@@ -224,10 +216,7 @@ function toggleIVR(selectEl) {
    ═══════════════════════════════════════════ */
 
 function toggleAccordion(header) {
-    var body = header.nextElementSibling;
-    while (body && !body.classList.contains('accordion-body')) {
-        body = body.nextElementSibling;
-    }
+    var body = header.parentElement.querySelector('.accordion-body');
     if (!body) return;
     var icon = header.querySelector('.accordion-icon');
     if (body.classList.contains('hidden')) {
@@ -248,7 +237,7 @@ window.addEventListener('scroll', function() {
 });
 
 /* ═══════════════════════════════════════════
-   COUNTRY LIST (B.002)
+   COUNTRY LIST
    ═══════════════════════════════════════════ */
 
 function populateCountries() {
@@ -283,55 +272,18 @@ function populateCountries() {
    ═══════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', function() {
-
     populateCountries();
 
-    // Standards → sections
     document.querySelectorAll('input[name="standards"]').forEach(function(cb) {
         cb.addEventListener('change', updateSections);
     });
 
-    // B.008 → count
     document.getElementById('b008').addEventListener('change', function() {
         toggle('field-b008-count', this.value === 'no');
     });
 
-    // B.011 AI → device AI fields
     document.getElementById('b011').addEventListener('change', updateAIFields);
-
-    // B.012 Innovative → device innovative fields
     document.getElementById('b012').addEventListener('change', updateInnovativeFields);
 
-
-
-
-
-
-    // Add first site by default
     addSite();
- 
-
-
-}
-
-);
-function openCountryModal() {
-    var country = document.getElementById('b002').value;
-
-    var text = "Please contact your Designated Operative.";
-
-    if (country === "Italy") {
-        text = "Contact: it.support@sgs.com";
-    } else if (country === "Germany") {
-        text = "Contact: de.support@sgs.com";
-    } else if (country === "United States") {
-        text = "Contact: us.support@sgs.com";
-    }
-
-    document.getElementById('contact-text').innerText = text;
-    document.getElementById('country-help-modal').classList.remove('hidden');
-}
-
-function closeCountryModal() {
-    document.getElementById('country-help-modal').classList.add('hidden');
-}
+});
