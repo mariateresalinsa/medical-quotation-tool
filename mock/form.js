@@ -2,7 +2,7 @@
    form.js — Conditional logic faithful to Client_Form.xlsx
    ============================================================ */
 
-var deviceCounts = { mdr: 0, ukmdr: 0, ukivdr: 0 };
+var deviceCounts = { mdr: 0, ivdr: 0, ukmdr: 0, ukivdr: 0 };
 var siteCount = 0;
 var WARN_AT = 5;
 var MAX_DEVICES = 10;
@@ -26,9 +26,10 @@ function updateSections() {
     var hasAny    = s.length > 0;
     var hasISO    = s.indexOf('iso_13485') !== -1;
     var hasMDR    = s.indexOf('eu_mdr') !== -1;
+    var hasIVDR   = s.indexOf('eu_ivdr') !== -1;
     var hasUKMDR  = s.indexOf('uk_mdr') !== -1;
     var hasUKIVDR = s.indexOf('uk_ivdr') !== -1;
-    var hasReg    = hasMDR || hasUKMDR || hasUKIVDR;
+    var hasReg    = hasMDR || hasIVDR || hasUKMDR || hasUKIVDR;
 
     toggle('eu-mdr-suboptions', hasMDR);
     toggle('uk-mdr-suboptions', hasUKMDR);
@@ -41,6 +42,7 @@ function updateSections() {
     toggle('field-b011',        hasReg);
     toggle('field-b012',        hasReg);
     toggle('eu-mdr-section',    hasMDR);
+    toggle('eu-ivdr-section',   hasIVDR);
     toggle('uk-mdr-section',    hasUKMDR);
     toggle('uk-ivdr-section',   hasUKIVDR);
 
@@ -185,6 +187,27 @@ function updateMDNCode(selectEl) {
         if (target) target.classList.remove('hidden');
     }
 }
+
+/* ═══════════════════════════════════════════
+   IVS 1005 checkbox → sterility (IVDR)
+   ═══════════════════════════════════════════ */
+
+function toggleIVS1005(checkbox) {
+    var card = checkbox.closest('.device-card');
+    var visibleBlock = card.querySelector('.classification-block:not(.hidden)');
+    if (!visibleBlock) return;
+    var sterility = visibleBlock.querySelector('[data-condition="ivs-1005"]');
+    if (sterility) sterility.classList.toggle('hidden', !checkbox.checked);
+}
+
+/* ═══════════════════════════════════════════
+   IVR code select (legacy, kept for compatibility)
+   ═══════════════════════════════════════════ */
+
+function toggleIVR(selectEl) {
+    // IVR code selection doesn't directly trigger sterility
+    // Sterility is triggered by IVS 1005 checkbox instead
+g}
 
 /* ═══════════════════════════════════════════
    STERILIZATION: + Add another method

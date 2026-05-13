@@ -20,8 +20,8 @@
             <h2>1. Select Standards</h2>
             <p class="hint">B.001 — Select all applicable certification schemes</p>
 
-            <div class="group-header">
-                <label><input type="checkbox" name="standards" value="iso_13485"> ISO 13485:2016 (+EN ISO 13485:2016) under BELAC or UKAS accreditation</label>
+            <div class="standards-group">
+                <label class="group-header"><input type="checkbox" name="standards" value="iso_13485"> ISO 13485:2016 (+EN ISO 13485:2016) under BELAC or UKAS accreditation</label>
             </div>
 
             <div class="standards-group">
@@ -37,18 +37,15 @@
             </div>
 
             <div class="standards-group">
+                <label class="group-header"><input type="checkbox" name="standards" value="eu_ivdr"> Regulation (EU) 2017/746 — EU IVDR</label>
+            </div>
+
+            <div class="standards-group">
                 <label class="group-header"><input type="checkbox" name="standards" value="uk_mdr"> UK MDR 2002 Medical Devices Regulation</label>
                 <div id="uk-mdr-suboptions" class="suboptions hidden">
                     <label><input type="checkbox" name="uk_mdr_sub" value="annex_ii"> UK MDR — Annex II (Full Quality Assurance System)</label>
                     <label><input type="checkbox" name="uk_mdr_sub" value="annex_v"> UK MDR — Annex V (Production Quality Assurance)</label>
                 </div>
-            </div>
-
-            <div class="standards-group">
-                <label class="group-header">
-                <input type="checkbox" name="standards" value="uk_ivdr"> 
-                    Regulation (EU) 2017/746 for IVD (EU IVDR)
-                </label>
             </div>
 
             <div class="standards-group">
@@ -87,9 +84,19 @@
             <button id="mdr-add-btn" class="btn-secondary" onclick="addDevice('mdr')">+ Add EU MDR Device</button>
         </section>
 
+        <!-- ═══════════ EU IVDR DEVICES ═══════════ -->
+        <section id="eu-ivdr-section" class="form-section hidden">
+            <h2>5. EU IVDR — Devices</h2>
+            <p class="hint">Table 3 — One entry per device / technical documentation</p>
+            <div id="ivdr-devices-container"></div>
+            <div id="ivdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
+            <div id="ivdr-limit" class="limit-msg hidden">Maximum 10 devices reached. Please <a href="Device_Template.xlsx" download>download the template</a> or contact your Designated Operative.</div>
+            <button id="ivdr-add-btn" class="btn-secondary" onclick="addDevice('ivdr')">+ Add EU IVDR Device</button>
+        </section>
+
         <!-- ═══════════ UK MDR DEVICES ═══════════ -->
         <section id="uk-mdr-section" class="form-section hidden">
-            <h2>5. UK MDR — Devices</h2>
+            <h2>6. UK MDR — Devices</h2>
             <p class="hint">Table 4 — One entry per device / technical documentation</p>
             <div id="ukmdr-devices-container"></div>
             <div id="ukmdr-warning" class="warning hidden">You have 5+ devices. Consider <a href="Device_Template.xlsx" download>downloading our Excel template</a> for bulk entry.</div>
@@ -99,17 +106,10 @@
 
         <!-- ═══════════ UK IVDR DEVICES ═══════════ -->
         <section id="uk-ivdr-section" class="form-section hidden">
-            <h2>6. UK MDR Part IV (IVDR) — Devices</h2>
+            <h2>7. UK MDR Part IV (IVDR) — Devices</h2>
             <p class="hint">Table 5 — One entry per device</p>
             <div id="ukivdr-devices-container"></div>
             <button id="ukivdr-add-btn" class="btn-secondary" onclick="addDevice('ukivdr')">+ Add UK IVDR Device</button>
-        </section>
-
-        <section id="uk-ivdr-section" class="form-section hidden">
-            <h2>6. EU IVDR — Devices</h2>
-            <p class="hint">Table 3 — One entry per device</p>
-            <div id="ivdr-devices-container"></div>
-            <button id="ivdr-add-btn" class="btn-secondary" onclick="addDevice('ivdr')">+ Add IVDR Device</button>
         </section>
 
     </main>
@@ -255,6 +255,77 @@
         </div>
     </template>
 
+    <!-- EU IVDR Device Template (Table 3) -->
+    <template id="ivdr-device-template">
+        <div class="card device-card" data-scheme="ivdr">
+            <h3 class="device-title accordion-toggle">IVDR Device <span class="device-num"></span> <span class="accordion-icon">▼</span></h3>
+            <button class="btn-remove" onclick="removeDevice(this)">×</button>
+            <div class="accordion-body">
+                <div class="field"><label>#3.001 — Device Name</label><input type="text" placeholder="e.g. Rapid Antigen Test"></div>
+                <div class="field">
+                    <label>#3.002 — Classification</label>
+                    <select class="device-class-select" onchange="updateDeviceClass(this)">
+                        <option value="">— Select —</option>
+                        <option value="A">Class A Sterile</option>
+                        <option value="B">Class B</option>
+                        <option value="C">Class C</option>
+                    </select>
+                </div>
+                <div class="field"><label>#3.003 — Number of device variants within the same technical documentation</label><input type="number" min="0" value="0"></div>
+                <div class="field"><label>#3.004 — If the device has accessories, how many?</label><input type="number" min="0" value="0"></div>
+
+                <!-- Table 3.1: Class C -->
+                <div class="classification-block hidden" data-class="C">
+                    <h4 class="block-title">Class C — Additional Fields</h4>
+                    <div class="field"><label>#3.005 — IVR code</label><select class="ivr-select mda-code-long" onchange="toggleIVR(this)"><option value="">— Select —</option><option value="IVR0101">IVR 0101 – ABO system markers</option><option value="IVR0102">IVR 0102 – Rhesus system markers</option><option value="IVR0103">IVR 0103 – Kell system markers</option><option value="IVR0104">IVR 0104 – Kidd system markers</option><option value="IVR0105">IVR 0105 – Duffy system markers</option><option value="IVR0106">IVR 0106 – Other blood grouping</option><option value="IVR0201">IVR 0201 – Tissue typing (HLA A, B, DR)</option><option value="IVR0202">IVR 0202 – Other tissue typing</option><option value="IVR0301">IVR 0301 – Cancer screening/diagnosis/staging/monitoring</option><option value="IVR0302">IVR 0302 – Other cancer/tumour markers</option><option value="IVR0401">IVR 0401 – Congenital/inherited disorders screening</option><option value="IVR0402">IVR 0402 – Genetic disease risk/prognosis</option><option value="IVR0403">IVR 0403 – Other human genetic testing</option><option value="IVR0501">IVR 0501 – Pre-natal screening transmissible agents</option><option value="IVR0502">IVR 0502 – Transmissible agents in blood/tissue/organs</option><option value="IVR0503">IVR 0503 – Sexually transmitted agents</option><option value="IVR0504">IVR 0504 – Infectious load/disease status/immune status</option><option value="IVR0505">IVR 0505 – Grow/isolate/identify infectious agents</option><option value="IVR0506">IVR 0506 – Other infection/immune status markers</option><option value="IVR0601">IVR 0601 – Specific disorders/impairments screening</option><option value="IVR0602">IVR 0602 – Physiological markers for specific disease</option><option value="IVR0603">IVR 0603 – Allergies and intolerances</option><option value="IVR0604">IVR 0604 – Other specific disease</option><option value="IVR0605">IVR 0605 – Monitoring medicinal products/substances</option><option value="IVR0606">IVR 0606 – Non-infectious disease staging</option><option value="IVR0607">IVR 0607 – Pregnancy/fertility testing</option><option value="IVR0608">IVR 0608 – Physiological markers screening/monitoring</option><option value="IVR0609">IVR 0609 – Other physiological status/therapeutic measures</option><option value="IVR0701">IVR 0701 – Controls without quantitative value</option><option value="IVR0702">IVR 0702 – Controls without qualitative value</option><option value="IVR0801">IVR 0801 – Devices under Rule 5(a)</option><option value="IVR0802">IVR 0802 – IVD instruments under Rule 5(b)</option><option value="IVR0803">IVR 0803 – Specimen receptacles under Rule 5(c)</option></select></div>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group vertical"><label><input type="checkbox" data-ivs="1001"> IVS 1001 – Near-patient testing</label><label><input type="checkbox" data-ivs="1002"> IVS 1002 – Self-testing</label><label><input type="checkbox" data-ivs="1003"> IVS 1003 – Companion diagnostics</label><label><input type="checkbox" data-ivs="1004"> IVS 1004 – Human origin tissues/cells</label><label><input type="checkbox" data-ivs="1005" onchange="toggleIVS1005(this)"> IVS 1005 – Sterile condition</label><label><input type="checkbox" data-ivs="1006"> IVS 1006 – Calibrators</label><label><input type="checkbox" data-ivs="1007"> IVS 1007 – Control materials</label><label><input type="checkbox" data-ivs="1008"> IVS 1008 – Instruments/equipment/systems</label><label><input type="checkbox" data-ivs="1009"> IVS 1009 – Software devices</label><label><input type="checkbox" data-ivs="1010"> IVS 1010 – Software incorporating/utilising</label></div></div>
+                    <div class="field"><label>#3.007 — Main IVP code</label><select class="mda-code-long"><option value="">— Select —</option><option>IVP 3001 – Agglutination tests</option><option>IVP 3002 – Biochemistry</option><option>IVP 3003 – Chromatography</option><option>IVP 3004 – Chromosomal analysis</option><option>IVP 3005 – Coagulometry</option><option>IVP 3006 – Flow cytometry</option><option>IVP 3007 – Immunoassays</option><option>IVP 3008 – Lysis based testing</option><option>IVP 3009 – Measurement of radioactivity</option><option>IVP 3010 – Microscopy</option><option>IVP 3011 – Molecular biological testing (incl. NGS)</option><option>IVP 3012 – Physical chemistry / electrochemistry</option><option>IVP 3013 – Spectroscopy</option><option>IVP 3014 – Tests of cell function</option><option>N/A - exceptional case (MDCG 2021-14)</option></select></div>
+                    <div class="field"><label>#3.008 — EMDN code</label><input type="text" placeholder="e.g. V030201"></div>
+                    <div class="field"><label>#3.009 — Number of Standalone calibrators</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.010 — Number of controls</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.011 — For multiplexed devices: How many analytes/biomarkers?</label><input type="number" min="0" value="0"></div>
+                    <div class="sterility-block hidden" data-condition="ivs-1005">
+                        <h4>Sterility — IVS 1005</h4>
+                        <div class="sterilization-methods-container"><div class="sterilization-method-card"><div class="field"><label>#S1.001 — Sterilisation Agent</label><div class="checkbox-group vertical"><label><input type="checkbox"> Ethylene Oxide</label><label><input type="checkbox"> Gamma Irradiation</label><label><input type="checkbox"> E-Beam Irradiation</label><label><input type="checkbox"> X-Ray Irradiation</label><label><input type="checkbox"> Steam / Moist</label><label><input type="checkbox"> Dry Heat</label><label><input type="checkbox"> Vaporized hydrogen peroxide</label><label><input type="checkbox"> Nitrogen dioxide</label><label><input type="checkbox"> Chloride dioxide</label><label><input type="checkbox"> Supercritical carbon dioxide</label><label><input type="checkbox"> Hydrogen peroxide solution</label><label><input type="checkbox"> Low temperature steam</label><label><input type="checkbox"> Formaldehyde</label><label><input type="checkbox"> Aseptic Process</label><label><input type="checkbox"> Others</label></div></div><div class="field"><label>#S2.004 — Number of Sterilization Process/Cycles Validated</label><input type="number" min="0" value="0"></div></div></div>
+                        <button class="btn-add-sterilization" onclick="addSterilizationMethod(this)">+ Add another Sterilization method</button>
+                    </div>
+                    <div class="field hidden ai-field"><label>#1.013 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.014 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+
+                <!-- Table 3.2: Class B -->
+                <div class="classification-block hidden" data-class="B">
+                    <h4 class="block-title">Class B — Additional Fields</h4>
+                    <div class="field"><label>#3.005 — IVR code</label><select class="ivr-select mda-code-long" onchange="toggleIVR(this)"><option value="">— Select —</option><option value="IVR0101">IVR 0101 – ABO system markers</option><option value="IVR0102">IVR 0102 – Rhesus system markers</option><option value="IVR0103">IVR 0103 – Kell system markers</option><option value="IVR0104">IVR 0104 – Kidd system markers</option><option value="IVR0105">IVR 0105 – Duffy system markers</option><option value="IVR0106">IVR 0106 – Other blood grouping</option><option value="IVR0201">IVR 0201 – Tissue typing</option><option value="IVR0202">IVR 0202 – Other tissue typing</option><option value="IVR0301">IVR 0301 – Cancer</option><option value="IVR0302">IVR 0302 – Other cancer markers</option><option value="IVR0401">IVR 0401 – Congenital disorders</option><option value="IVR0402">IVR 0402 – Genetic disease risk</option><option value="IVR0403">IVR 0403 – Other genetic testing</option><option value="IVR0501">IVR 0501 – Pre-natal screening</option><option value="IVR0502">IVR 0502 – Transmissible agents</option><option value="IVR0503">IVR 0503 – STD agents</option><option value="IVR0504">IVR 0504 – Infectious load/immune status</option><option value="IVR0505">IVR 0505 – Grow/isolate infectious agents</option><option value="IVR0506">IVR 0506 – Other infection markers</option><option value="IVR0601">IVR 0601 – Disorders screening</option><option value="IVR0602">IVR 0602 – Physiological markers</option><option value="IVR0603">IVR 0603 – Allergies</option><option value="IVR0604">IVR 0604 – Other specific disease</option><option value="IVR0605">IVR 0605 – Monitoring medicinal products</option><option value="IVR0606">IVR 0606 – Non-infectious staging</option><option value="IVR0607">IVR 0607 – Pregnancy/fertility</option><option value="IVR0608">IVR 0608 – Physiological markers</option><option value="IVR0609">IVR 0609 – Other physiological</option><option value="IVR0701">IVR 0701 – Controls quantitative</option><option value="IVR0702">IVR 0702 – Controls qualitative</option><option value="IVR0801">IVR 0801 – Rule 5(a)</option><option value="IVR0802">IVR 0802 – Rule 5(b)</option><option value="IVR0803">IVR 0803 – Rule 5(c)</option></select></div>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group vertical"><label><input type="checkbox" data-ivs="1001"> IVS 1001 – Near-patient testing</label><label><input type="checkbox" data-ivs="1002"> IVS 1002 – Self-testing</label><label><input type="checkbox" data-ivs="1003"> IVS 1003 – Companion diagnostics</label><label><input type="checkbox" data-ivs="1004"> IVS 1004 – Human origin tissues/cells</label><label><input type="checkbox" data-ivs="1005" onchange="toggleIVS1005(this)"> IVS 1005 – Sterile condition</label><label><input type="checkbox" data-ivs="1006"> IVS 1006 – Calibrators</label><label><input type="checkbox" data-ivs="1007"> IVS 1007 – Control materials</label><label><input type="checkbox" data-ivs="1008"> IVS 1008 – Instruments/equipment</label><label><input type="checkbox" data-ivs="1009"> IVS 1009 – Software devices</label><label><input type="checkbox" data-ivs="1010"> IVS 1010 – Software incorporating</label></div></div>
+                    <div class="field"><label>#3.009 — Number of Standalone calibrators</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.010 — Number of controls</label><input type="number" min="0" value="0"></div>
+                    <div class="field"><label>#3.011 — For multiplexed devices: How many analytes/biomarkers?</label><input type="number" min="0" value="0"></div>
+                    <div class="sterility-block hidden" data-condition="ivs-1005">
+                        <h4>Sterility — IVS 1005</h4>
+                        <div class="sterilization-methods-container"><div class="sterilization-method-card"><div class="field"><label>#S1.001 — Sterilisation Agent</label><div class="checkbox-group vertical"><label><input type="checkbox"> Ethylene Oxide</label><label><input type="checkbox"> Gamma Irradiation</label><label><input type="checkbox"> E-Beam Irradiation</label><label><input type="checkbox"> X-Ray Irradiation</label><label><input type="checkbox"> Steam / Moist</label><label><input type="checkbox"> Dry Heat</label><label><input type="checkbox"> Vaporized hydrogen peroxide</label><label><input type="checkbox"> Nitrogen dioxide</label><label><input type="checkbox"> Chloride dioxide</label><label><input type="checkbox"> Supercritical carbon dioxide</label><label><input type="checkbox"> Hydrogen peroxide solution</label><label><input type="checkbox"> Low temperature steam</label><label><input type="checkbox"> Formaldehyde</label><label><input type="checkbox"> Aseptic Process</label><label><input type="checkbox"> Others</label></div></div><div class="field"><label>#S2.004 — Cycles Validated</label><input type="number" min="0" value="0"></div></div></div>
+                        <button class="btn-add-sterilization" onclick="addSterilizationMethod(this)">+ Add another Sterilization method</button>
+                    </div>
+                    <div class="field hidden ai-field"><label>#2.013 — Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.011 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+
+                <!-- Table 3.3: Class A -->
+                <div class="classification-block hidden" data-class="A">
+                    <h4 class="block-title">Class A — Additional Fields</h4>
+                    <div class="field"><label>#3.006 — IVS codes</label><div class="checkbox-group vertical"><label><input type="checkbox" data-ivs="1001"> IVS 1001 – Near-patient testing</label><label><input type="checkbox" data-ivs="1002"> IVS 1002 – Self-testing</label><label><input type="checkbox" data-ivs="1005" onchange="toggleIVS1005(this)"> IVS 1005 – Sterile condition</label><label><input type="checkbox" data-ivs="1006"> IVS 1006 – Calibrators</label></div></div>
+                    <div class="sterility-block hidden" data-condition="ivs-1005">
+                        <h4>Sterility — IVS 1005</h4>
+                        <div class="sterilization-methods-container"><div class="sterilization-method-card"><div class="field"><label>#S1.001 — Sterilisation Agent</label><div class="checkbox-group vertical"><label><input type="checkbox"> Ethylene Oxide</label><label><input type="checkbox"> Gamma Irradiation</label><label><input type="checkbox"> E-Beam Irradiation</label><label><input type="checkbox"> X-Ray Irradiation</label><label><input type="checkbox"> Steam / Moist</label><label><input type="checkbox"> Dry Heat</label><label><input type="checkbox"> Vaporized hydrogen peroxide</label><label><input type="checkbox"> Nitrogen dioxide</label><label><input type="checkbox"> Chloride dioxide</label><label><input type="checkbox"> Supercritical carbon dioxide</label><label><input type="checkbox"> Hydrogen peroxide solution</label><label><input type="checkbox"> Low temperature steam</label><label><input type="checkbox"> Formaldehyde</label><label><input type="checkbox"> Aseptic Process</label><label><input type="checkbox"> Others</label></div></div><div class="field"><label>#S2.004 — Cycles Validated</label><input type="number" min="0" value="0"></div></div></div>
+                        <button class="btn-add-sterilization" onclick="addSterilizationMethod(this)">+ Add another Sterilization method</button>
+                    </div>
+                    <div class="field hidden ai-field"><label>Artificial Intelligence</label><select><option value="no">No</option><option value="yes">Yes</option></select></div>
+                    <div class="field hidden ai-field"><label>#1.011 — Number of accessories</label><input type="number" min="0" value="0"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <!-- UK MDR Device Template -->
     <template id="ukmdr-device-template">
         <div class="card device-card" data-scheme="ukmdr">
@@ -330,28 +401,6 @@
         </div>
     </template>
 
-    <!-- EU IVDR Device Template -->
-    <template id="ivdr-device-template">
-    <div class="card device-card" data-scheme="ivdr">
-        <h3 class="device-title">IVDR Device <span class="device-num"></span></h3>
-        <button class="btn-remove" onclick="removeDevice(this)">×</button>
-        <div class="accordion-body">
-            <div class="field"><label>#3.001 — Device Name</label><input type="text"></div>
-            <div class="field">
-                <label>#3.002 — Classification</label>
-                <select class="ivdr-class-select" onchange="updateIVDRFields(this)">
-                    <option value="">— Select —</option>
-                    <option value="A">Class A</option>
-                    <option value="B">Class B</option>
-                    <option value="C">Class C</option>
-                    <!-- <option value="D">Class D</option> -->
-                </select>
-            </div>
-            <div class="ivdr-dynamic-fields"></div>
-        </div>
-    </div>
-</template>
-
     <!-- UK IVDR Device Template -->
     <template id="ukivdr-device-template">
         <div class="card device-card" data-scheme="ukivdr">
@@ -359,7 +408,7 @@
             <button class="btn-remove" onclick="removeDevice(this)">×</button>
             <div class="accordion-body">
                 <div class="field"><label>#5.001 — Device Name</label><input type="text" placeholder="e.g. Blood glucose test"></div>
-                <div class="field"><label>#5.002 — Classification</label><select><option value="">— Select —</option><option>Class A Sterile</option><option>Class B</option><option>Class C</option></select></div>
+                <div class="field"><label>#5.002 — Classification</label><select><option value="">— Select —</option><option>Class A</option><option>Class B</option><option>Class C</option><option>Class D</option></select></div>
                 <div class="field"><label>#5.003 — MDN/MDA Code</label><select><option value="">— Select —</option><option>Other</option></select></div>
                 <div class="field"><label>#5.004 — GPMD Code</label><input type="text" placeholder="e.g. V030201"></div>
             </div>
