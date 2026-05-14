@@ -74,7 +74,11 @@ var hasMDRAnnex =
     document.querySelector('input[name="eu_mdr_sub"][value="article_117"]:checked');
 
 // IVDR annexes (future-proof)
-var hasIVDRAnnex = false;
+var hasIVDRAnnex = 
+    document.querySelector('input[name="eu_ivdr_sub"][value="annex_ix_123"]:checked') ||
+    document.querySelector('input[name="eu_ivdr_sub"][value="annex_ix_45"]:checked') ||
+    document.querySelector('input[name="eu_ivdr_sub"][value="annex_xi_a"]:checked');
+
 
 // Hide baseline fields for article-only selections
 var onlyArticles =
@@ -327,8 +331,78 @@ function updateSummary() {
         else if (t.includes('Part IV')) standards.push('UK IVDR');
     });
     if (standards.length) {
-        html += '<div class="summary-section"><strong>Standards:</strong><ul>' + standards.map(s => '<li>' + s + '</li>').join('') + '</ul></div>';
+
+    var standardDetails = [];
+
+    // EU MDR
+    if (document.querySelector('input[value="eu_mdr"]:checked')) {
+
+        var mdrSubs = [];
+
+        document.querySelectorAll('input[name="eu_mdr_sub"]:checked').forEach(cb => {
+            mdrSubs.push(cb.parentElement.textContent.trim());
+        });
+
+        standardDetails.push(
+            'EU MDR' +
+            (mdrSubs.length
+                ? ' → ' + mdrSubs.join(', ')
+                : '')
+        );
     }
+
+    // EU IVDR
+    if (document.querySelector('input[value="eu_ivdr"]:checked')) {
+
+        var ivdrSubs = [];
+
+        document.querySelectorAll('input[name="eu_ivdr_sub"]:checked').forEach(cb => {
+            ivdrSubs.push(cb.parentElement.textContent.trim());
+        });
+
+        standardDetails.push(
+            'EU IVDR' +
+            (ivdrSubs.length
+                ? ' → ' + ivdrSubs.join(', ')
+                : '')
+        );
+    }
+
+    // UK MDR
+    if (document.querySelector('input[value="uk_mdr"]:checked')) {
+
+        var ukSubs = [];
+
+        document.querySelectorAll('input[name="uk_mdr_sub"]:checked').forEach(cb => {
+            ukSubs.push(cb.parentElement.textContent.trim());
+        });
+
+        standardDetails.push(
+            'UK MDR' +
+            (ukSubs.length
+                ? ' → ' + ukSubs.join(', ')
+                : '')
+        );
+    }
+
+    // ISO
+    if (document.querySelector('input[value="iso_13485"]:checked')) {
+        standardDetails.push('ISO 13485');
+    }
+
+    // UK IVDR
+    if (document.querySelector('input[value="uk_ivdr"]:checked')) {
+        standardDetails.push('UK IVDR');
+    }
+
+    html +=
+        '<div class="summary-section">' +
+        '<strong>Standards:</strong>' +
+        '<ul>' +
+        standardDetails.map(s => '<li>' + s + '</li>').join('') +
+        '</ul>' +
+        '</div>';
+}
     if (siteCount > 0) html += '<div class="summary-section"><strong>Sites:</strong> ' + siteCount + '</div>';
 
     var names = { mdr: 'EU MDR', ivdr: 'EU IVDR', ukmdr: 'UK MDR', ukivdr: 'UK IVDR' };
