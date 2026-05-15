@@ -51,6 +51,8 @@ Every device card has a **classification dropdown** that reveals the right sub-b
 
 Within each sub-block, further conditionals: MDS code checkboxes toggle sterility blocks and medicinal/animal substance fields. MDN/MDA code selection (Class IIa) toggles washer/sterilizer-specific fields. Sterility blocks support multiple sterilization methods via cloneable cards.
 
+**Device thresholds:** at 5 devices per scheme a warning suggests downloading an Excel template for bulk entry. At 10 the "Add Device" button is disabled and the user is asked to use the template or contact their Designated Operative.
+
 ### 8. Contact Details — visible when any standard is selected
 
 Company name, contact person, email, phone.
@@ -76,7 +78,7 @@ Company name, contact person, email, phone.
 
 ## Data Model
 
-When exported, the form will produce a JSON (if required and needed) with this structure:
+When exported, the form produces a JSON with this structure:
 
 ```
 {
