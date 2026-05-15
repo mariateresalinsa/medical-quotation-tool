@@ -38,7 +38,7 @@ medical-quotation-tool/
 │   ├── form.js                       ← ✅ Conditional logic — needs completion
 │   ├── engine.js                     ← Stub
 │   └── app.js                        ← Stub
-└── Client_Form.xlsx                 ← Source of truth for form fields
+└── Mediacal Services tool Parameters collection.xlsx                 ← Source of truth for form fields
 ```
 
 ## How to Run
