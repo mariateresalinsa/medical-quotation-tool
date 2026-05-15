@@ -1,6 +1,6 @@
 # Client Form — Technical Documentation
 
-> **Source of truth:** `Medical Services tool Parameters collection.xlsx` (Client Form Sheet and Drop Downs Sheet)  
+> **Source of truth:**  [Medical Services tool Parameters collection.xlsx](https://sgs-my.sharepoint.com/:x:/r/personal/aina_herasparets_sgs_com/_layouts/15/Doc.aspx?sourcedoc=%7BF4078D1C-20B4-42B3-8EE9-573355D077CE%7D&file=Medical%20Services%20tool%20Parameters%20collection.xlsx&action=default&mobileredirect=true) — Full calculation rules (SharePoint, internal access only)(Client Form Sheet and Drop Downs Sheet)  
 > **Files:** `mock/index.html` · `mock/form.js` · `mock/style.css`  
 > **Status:** Conditional logic working. Needs completion + JSON export.
 

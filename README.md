@@ -32,28 +32,22 @@ medical-quotation-tool/
 │   ├── module_III_audit.md
 │   ├── module_IV_linking.md
 │   └── module_V_quotation.md
-├── mock/                            ← Browser-based prototype
-│   ├── index.html                    ← ✅ Form layout + templates
-│   ├── style.css                     ← ✅ Styles
-│   ├── form.js                       ← ✅ Conditional logic — needs completion
-│   ├── engine.js                     ← Stub
-│   └── app.js                        ← Stub
-└── Mediacal Services tool Parameters collection.xlsx                 ← Source of truth for form fields
+└── mock/                            ← Browser-based prototype
+    ├── index.html                    ← ✅ Form layout + templates
+    ├── style.css                     ← ✅ Styles
+    ├── form.js                       ← ✅ Conditional logic — needs completion
+    ├── engine.js                     ← Stub
+    └── app.js                        ← Stub
 ```
+
+## Reference Documents
+
+- [Medical Services tool Parameters collection.xlsx](https://sgs-my.sharepoint.com/:x:/r/personal/aina_herasparets_sgs_com/_layouts/15/Doc.aspx?sourcedoc=%7BF4078D1C-20B4-42B3-8EE9-573355D077CE%7D&file=Medical%20Services%20tool%20Parameters%20collection.xlsx&action=default&mobileredirect=true) — Full calculation rules (SharePoint, internal access only)
 
 ## How to Run
 
 Open `mock/index.html` in any browser. No server required.
 
-Live demo: **https://mariateresalinsa.github.io/medical-quotation-tool/mock/**
-
 ## Documentation
 
-The full technical documentation for the Client Form is in [`docs/client_form.md`](docs/client_form.md). It covers:
-
-- Form architecture and layout
-- Every field mapped to the Excel spec, with conditions and calculation effects
-- JavaScript functions reference
-- Data model (JSON schema) for engine integration
-- Known bugs and TODOs with priorities
-- Next steps: form completion + JSON export
+The full technical documentation for the Client Form is in [`docs/client_form.md`](docs/client_form.md).
