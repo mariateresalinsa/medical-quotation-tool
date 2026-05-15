@@ -1,6 +1,6 @@
 # Client Form — Technical Documentation
 
-> **Source of truth:** `Client_Form.xlsx` (Sheet 1)  
+> **Source of truth:** `Medical Services tool Parameters collection.xlsx` (Client Form Sheet and Drop Downs Sheet)  
 > **Files:** `mock/index.html` · `mock/form.js` · `mock/style.css`  
 > **Status:** Conditional logic working. Needs completion + JSON export.
 
