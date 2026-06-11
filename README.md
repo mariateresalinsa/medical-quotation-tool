@@ -47,6 +47,7 @@ medical-quotation-tool/
 ## How to Run
 
 Open `mock/index.html` in any browser. No server required.
+Or just click here: https://mariateresalinsa.github.io/medical-quotation-tool/mock/
 
 ## Documentation
 
